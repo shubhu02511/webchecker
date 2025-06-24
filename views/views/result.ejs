@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Accessibility Analysis Result</title>
+  <link rel="stylesheet" href="/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <span class="logo-text">WEBCHECKER</span>
+      <nav>
+        <a href="/">Home</a>
+        <a href="#">Domains & SSL</a>
+        <a href="#">Websites</a>
+        <a href="#">eCommerce</a>
+        <a href="#">Hosting</a>
+        <a href="#">WordPress</a>
+        <a href="#">Email & Office</a>
+        <a href="#">Servers</a>
+        <a href="#">More</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <h2 style="text-align:center; color:#004080; margin-top:2rem;">Accessibility Analysis Result</h2>
+    <% if (result.issues && result.issues.length > 0) { %>
+      <div class="grid">
+        <% result.issues.forEach(function(issue, index) { %>
+          <div class="column">
+            <div class="card border-danger h-100">
+              <div class="card-header bg-danger text-white">Issue <%= index + 1 %></div>
+              <div class="card-body">
+                <p><%= issue.issue %></p>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="card border-success h-100">
+              <div class="card-header bg-success text-white">Solution</div>
+              <div class="card-body">
+                <p><%= issue.solution %></p>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="no-issues">No major accessibility issues found ✅</div>
+    <% } %>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <p>📧 Email: <a href="mailto:shubhamchaurasiya095@gmail.com">shubhamchaurasiya095@gmail.com</a></p>
+      <p>📞 Contact: <a href="tel:+917752993275">+91-7752993275</a></p>
+      <p>
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/linkedin.svg" alt="LinkedIn" class="icon" style="height: 20px; vertical-align: middle; margin-right: 5px;" />
+        <a href="https://www.linkedin.com/in/shubham-chaurasiya-5a64812b2/" target="_blank">LinkedIn Profile</a>
+      </p>
+      <p>© 2025 WebChecker. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Accessibility Analysis History</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container mt-4">
+    <h1 class="mb-4">Accessibility Analysis History</h1>
+
+    <!-- Delete All History Button -->
+    <form action="/delete-history" method="POST"
+      onsubmit="return confirm('Are you sure you want to delete all history?');">
+      <button type="submit" class="btn btn-danger mb-3">🗑️ Delete All History</button>
+    </form>
+
+    <% if (history.length===0) { %>
+      <p>No history found.</p>
+      <% } else { %>
+        <% history.forEach(function(item, index) { %>
+          <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+              Entry <%= index + 1 %> - <%= item.date.toDateString() %>
+            </div>
+            <div class="card-body">
+              <p><strong>URL:</strong>
+                <%= item.url %>
+              </p>
+
+              <div class="row">
+                <% item.issues.forEach(function(issue, i) { %>
+                  <div class="col-md-6 mb-3">
+                    <div class="card border-danger h-100">
+                      <div class="card-header bg-danger text-white">Issue <%= i + 1 %>
+                      </div>
+                      <div class="card-body">
+                        <p>
+                          <%= issue.issue %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <div class="card border-success h-100">
+                      <div class="card-header bg-success text-white">Solution</div>
+                      <div class="card-body">
+                        <p>
+                          <%= issue.solution %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+            <% } %>
+  </div>
+</body>
+
+</html>
