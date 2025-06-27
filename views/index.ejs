@@ -75,6 +75,12 @@
         <a href="/email-office">Email & Office</a>
         <a href="/servers">Servers</a>
         <a href="/more">More</a>
+        <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn) { %>
+          <a href="/logout" style="background:#fff;color:#003366;font-weight:bold;">Logout</a>
+        <% } else { %>
+          <a href="/login" style="background:#fff;color:#003366;font-weight:bold;">Login</a>
+          <a href="/signup" style="background:#fff;color:#003366;font-weight:bold;">Sign Up</a>
+        <% } %>
       </nav>
     </div>
     <div class="header-content">

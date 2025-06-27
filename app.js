@@ -5,16 +5,24 @@ const puppeteer = require('puppeteer');
 const bcrypt = require('bcryptjs');
 const ChatService = require('./utils/chatUtils');
 const User = require('./models/User');
+const mongoose = require('mongoose');
 
 const app = express();
 const port = 3000;
 
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('✅ Connected to MongoDB');
+}).catch((err) => {
+  console.error('❌ MongoDB connection error:', err.message);
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-
-// Hardcoded credentials for demo
-const USER = { username: 'admin', password: 'password123' };
 
 // Helper to parse cookies from request headers
 function getCookies(req) {
@@ -28,9 +36,6 @@ function getCookies(req) {
   }
   return cookies;
 }
-
-// In-memory user store
-const USERS = [{ username: 'admin', password: 'password123' }];
 
 // Auth middleware
 function requireAuth(req, res, next) {
