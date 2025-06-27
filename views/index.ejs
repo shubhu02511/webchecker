@@ -142,6 +142,56 @@
       <button onclick="window.print()">🖰 Export as PDF</button>
       <button onclick="copyResults()">📋 Copy Results</button>
     </div>
+
+    <% if (chartData && chartData.length) { %>
+      <div style="text-align:center; margin: 24px 0;">
+        <button onclick="document.getElementById('chart-modal').style.display='flex'" style="padding:10px 24px; background:#00bfff; color:#fff; border:none; border-radius:8px; font-size:1.1rem; font-weight:bold; cursor:pointer;">Data Chart</button>
+      </div>
+      <div id="chart-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:2000; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:32px 24px; border-radius:12px; max-width:420px; margin:60px auto; position:relative; min-width:320px;">
+          <button onclick="document.getElementById('chart-modal').style.display='none'" style="position:absolute; top:10px; right:14px; background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+          <h3 style="text-align:center; margin-bottom:18px;">Accessibility Issue Chart</h3>
+          <canvas id="issueChart" width="350" height="220"></canvas>
+          <ul style="margin-top:18px; padding-left:18px;">
+            <% if (solutions && solutions.length) { %>
+              <% solutions.forEach(function(sol, idx) { %>
+                <li><b><%= chartData[idx] ? chartData[idx].label : '' %>:</b> <%= sol %></li>
+              <% }); %>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        function showChart() {
+          const ctx = document.getElementById('issueChart').getContext('2d');
+          if(window.issueChartObj) window.issueChartObj.destroy();
+          window.issueChartObj = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: <%- JSON.stringify(chartData.map(item => item.label)) %>,
+              datasets: [{
+                label: 'Issue Percentage',
+                data: <%- JSON.stringify(chartData.map(item => item.percent)) %>,
+                backgroundColor: ['#007bff', '#ff9800', '#e91e63'],
+                borderRadius: 8
+              }]
+            },
+            options: {
+              responsive: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+              },
+              scales: {
+                y: { beginAtZero: true, max: 100, title: { display: true, text: '% of Elements' } }
+              }
+            }
+          });
+        }
+        document.querySelector('[onclick*="chart-modal"]').addEventListener('click', showChart);
+      </script>
+    <% } %>
   </main>
 
   <footer>

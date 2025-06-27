@@ -73,7 +73,7 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/', requireAuth, (req, res) => {
-  res.render('index', { results: null, error: null, isLoggedIn: true });
+  res.render('index', { results: null, error: null, isLoggedIn: true, chartData: null, solutions: null });
 });
 
 app.post('/', requireAuth, async (req, res) => {
@@ -89,32 +89,56 @@ app.post('/', requireAuth, async (req, res) => {
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'load', timeout: 0 });
 
-    const results = await page.evaluate(() => {
+    const analysis = await page.evaluate(() => {
+      // Count all elements
+      const totalImgs = document.querySelectorAll('img').length;
+      const totalLinks = document.querySelectorAll('a').length;
+      const totalInputs = document.querySelectorAll('input').length;
+
+      // Count issues
+      const imgWithoutAlt = document.querySelectorAll('img:not([alt])').length;
+      const linkWithoutHref = document.querySelectorAll('a:not([href])').length;
+      const inputMissingLabel = document.querySelectorAll('input:not([aria-label]):not([aria-labelledby]):not([placeholder])').length;
+
+      // Calculate percentages
+      const imgPercent = totalImgs ? Math.round((imgWithoutAlt / totalImgs) * 100) : 0;
+      const linkPercent = totalLinks ? Math.round((linkWithoutHref / totalLinks) * 100) : 0;
+      const inputPercent = totalInputs ? Math.round((inputMissingLabel / totalInputs) * 100) : 0;
+
+      // Prepare issues/solutions (only once per type)
       const issues = [];
-
-      document.querySelectorAll('img:not([alt])').forEach(img => {
-        issues.push(`Image without alt: ${img.outerHTML}`);
-      });
-
-      document.querySelectorAll('a:not([href])').forEach(a => {
-        issues.push(`Link without href: ${a.outerHTML}`);
-      });
-
-      document.querySelectorAll('input:not([aria-label]):not([aria-labelledby]):not([placeholder])').forEach(input => {
-        issues.push(`Input missing label: ${input.outerHTML}`);
-      });
-
-      return issues;
+      const solutions = [];
+      if (imgWithoutAlt > 0) {
+        issues.push(`Images without alt (${imgPercent}%)`);
+        solutions.push('Add descriptive alt text to all images.');
+      }
+      if (linkWithoutHref > 0) {
+        issues.push(`Links without href (${linkPercent}%)`);
+        solutions.push('Ensure all links have valid href attributes.');
+      }
+      if (inputMissingLabel > 0) {
+        issues.push(`Inputs missing label (${inputPercent}%)`);
+        solutions.push('Add clear labels to all input fields.');
+      }
+      return {
+        issues,
+        solutions,
+        chartData: [
+          { label: 'Images without alt', percent: imgPercent },
+          { label: 'Links without href', percent: linkPercent },
+          { label: 'Inputs missing label', percent: inputPercent }
+        ]
+      };
     });
 
     await browser.close();
-    console.log('Accessibility issues:', results);
+    console.log('Accessibility issues:', analysis.issues);
 
-    res.render('index', { results, error: null });
+    res.render('index', { results: analysis.issues, solutions: analysis.solutions, chartData: analysis.chartData, error: null, isLoggedIn: true });
 
   } catch (err) {
     console.error('❌ ERROR OCCURRED:', err.message);
-    res.render('index', { results: null, error: 'Error analyzing the page.' });
+    res.render('index', { results: null, solutions: null, chartData: null, error: 'Error analyzing the page.', isLoggedIn: true });
   }
 });
 
