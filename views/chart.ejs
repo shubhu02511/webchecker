@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Accessibility Chart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { background: #f8fbff; min-height: 100vh; margin: 0; }
+    .chart-center-outer {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chart-container {
+      max-width: 370px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+      padding: 38px 24px 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h2 { text-align: center; color: #004080; font-size: 2rem; font-weight: 800; margin-bottom: 18px; }
+    .chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 18px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.08rem;
+      font-weight: 600;
+    }
+    .legend-color {
+      width: 22px; height: 12px; border-radius: 6px;
+      display: inline-block;
+    }
+    .legend-problem { background: #007aff; }
+    .legend-solution { background: #111; }
+    .legend-label-problem { color: #007aff; }
+    .legend-label-solution { color: #111; }
+    .real-life-examples-list { margin: 40px auto 0 auto; display:flex;flex-wrap:wrap;gap:24px;justify-content:center; max-width: 1200px; }
+    .example-card {
+      background: #f8fbff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      padding: 18px 22px;
+      max-width: 420px;
+      min-width: 260px;
+      flex: 1 1 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .example-issue { color: #007aff; font-size: 1.08rem; font-weight: 600; }
+    .example-solution { color: #111; font-size: 1.08rem; font-weight: 600; }
+    @media (max-width: 700px) {
+      .real-life-examples-list { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <% 
+    var results = typeof results !== 'undefined' ? results : [];
+    if (results.length === 0) {
+      results = [
+        'Image without alt: <img src="shoes.jpg">',
+        'Link without href: <a>Read More</a>',
+        'Input missing label: <input type="email">',
+        'Image without alt: <img src="bag.jpg">',
+        'Link without href: <a>Click here</a>'
+      ];
+    }
+    var issueTypes = [
+      { type: 'Image without alt', label: "Image missing description", solution: "Add a short alt text to every image so screen readers can describe them." },
+      { type: 'Link without href', label: "Link missing destination", solution: "Make sure every link has a valid href so users can navigate." },
+      { type: 'Input missing label', label: "Input missing label", solution: "Add a label or placeholder to every input so users know what to enter." }
+    ];
+    var foundTypes = [];
+    results.forEach(function(issue) {
+      issueTypes.forEach(function(t) {
+        if (issue.includes(t.type) && foundTypes.indexOf(t.type) === -1) foundTypes.push(t.type);
+      });
+    });
+    if (results.length > foundTypes.length) foundTypes.push('Other');
+    var counts = { 'Image without alt': 0, 'Link without href': 0, 'Input missing label': 0, 'Other': 0 };
+    results.forEach(function(issue) {
+      if (issue.includes('Image without alt')) counts['Image without alt']++;
+      else if (issue.includes('Link without href')) counts['Link without href']++;
+      else if (issue.includes('Input missing label')) counts['Input missing label']++;
+      else counts['Other']++;
+    });
+    var totalIssues = results.length;
+    var uniqueTypes = foundTypes.length;
+  %>
+  <div class="chart-center-outer">
+    <div class="chart-container">
+      <h2>Accessibility Problems vs Solutions</h2>
+      <canvas id="accessibilityDonut" width="240" height="240"></canvas>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-color legend-problem"></span><span class="legend-label-problem" id="problems-label"></span></div>
+        <div class="legend-item"><span class="legend-color legend-solution"></span><span class="legend-label-solution" id="solutions-label"></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="problems-solutions-list" style="max-width:700px;margin:40px auto 0 auto;">
+    <% foundTypes.forEach(function(type, idx) { %>
+      <div class="ps-row" style="background:#f8fbff;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.04);padding:18px 22px;margin-bottom:18px;">
+        <div style="color:#007aff;font-weight:600;margin-bottom:6px;">Problem <%= idx+1 %>:</div>
+        <div style="margin-bottom:8px;word-break:break-word;">
+          <% if (type === 'Image without alt') { %>
+            Some images are missing alt text, so screen readers can't describe them.
+          <% } else if (type === 'Link without href') { %>
+            Some links don't have a destination, so users can't navigate.
+          <% } else if (type === 'Input missing label') { %>
+            Some form fields are missing labels, so users don't know what to enter.
+          <% } else { %>
+            There are other accessibility issues on the page.
+          <% } %>
+        </div>
+        <div style="color:#111;font-weight:600;">Solution:</div>
+        <div style="word-break:break-word;">
+          <% if (type === 'Image without alt') { %>
+            Add a short alt text to every image so screen readers can describe them.
+          <% } else if (type === 'Link without href') { %>
+            Make sure every link has a valid href so users can navigate.
+          <% } else if (type === 'Input missing label') { %>
+            Add a label or placeholder to every input so users know what to enter.
+          <% } else { %>
+            Review the page for other accessibility improvements.
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    var counts = <%- JSON.stringify(counts) %>;
+    var totalIssues = <%= totalIssues %>;
+    var uniqueTypes = <%= uniqueTypes %>;
+    var percent = {
+      'Image without alt': totalIssues ? Math.round((counts['Image without alt'] / totalIssues) * 100) : 0,
+      'Link without href': totalIssues ? Math.round((counts['Link without href'] / totalIssues) * 100) : 0,
+      'Input missing label': totalIssues ? Math.round((counts['Input missing label'] / totalIssues) * 100) : 0,
+      'Other': totalIssues ? Math.round((counts['Other'] / totalIssues) * 100) : 0
+    };
+    var ctx = document.getElementById('accessibilityDonut').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: [
+          `Images missing description (${percent['Image without alt']}%)`,
+          `Links missing destination (${percent['Link without href']}%)`,
+          `Inputs missing label (${percent['Input missing label']}%)`,
+          `Other (${percent['Other']}%)`
+        ],
+        datasets: [{
+          data: [counts['Image without alt'], counts['Link without href'], counts['Input missing label'], counts['Other']],
+          backgroundColor: ['#007aff', '#111', '#00c6ff', '#888'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true }
+        },
+        cutout: '70%',
+        responsive: false,
+        maintainAspectRatio: false
+      }
+    });
+    // Set legend labels with colored percentages
+    document.getElementById('problems-label').innerHTML = `Problems <span style='color:#007aff'>(${totalIssues} found)</span>`;
+    document.getElementById('solutions-label').innerHTML = `Solutions <span style='color:#111'>(${uniqueTypes} unique)</span>`;
+  </script>
+</body>
+</html> 

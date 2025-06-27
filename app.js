@@ -1,6 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const puppeteer = require('puppeteer');
+const bcrypt = require('bcryptjs');
+const ChatService = require('./utils/chatUtils');
+const User = require('./models/User');
 
 const app = express();
 const port = 3000;
@@ -43,14 +47,18 @@ app.get('/login', (req, res) => {
   res.render('login', { error: null });
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const user = USERS.find(u => u.username === username && u.password === password);
-  if (user) {
-    res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly; Path=/');
-    res.redirect('/');
-  } else {
-    res.render('login', { error: 'Invalid username or password.' });
+  try {
+    const user = await User.findOne({ username });
+    if (user && await bcrypt.compare(password, user.password)) {
+      res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly; Path=/');
+      res.redirect('/');
+    } else {
+      res.render('login', { error: 'Invalid username or password.' });
+    }
+  } catch (err) {
+    res.render('login', { error: 'Error logging in.' });
   }
 });
 
@@ -142,16 +150,35 @@ app.get('/signup', (req, res) => {
   res.render('signup', { error: null, success: null });
 });
 
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.render('signup', { error: 'All fields are required.', success: null });
   }
-  if (USERS.find(u => u.username === username)) {
-    return res.render('signup', { error: 'Username already exists.', success: null });
+  try {
+    const existing = await User.findOne({ username });
+    if (existing) {
+      return res.render('signup', { error: 'Username already exists.', success: null });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ username, password: hashedPassword });
+    await user.save();
+    res.render('signup', { error: null, success: 'Registration successful! You can now log in.' });
+  } catch (err) {
+    res.render('signup', { error: 'Error creating user.', success: null });
   }
-  USERS.push({ username, password });
-  res.render('signup', { error: null, success: 'Registration successful! You can now log in.' });
+});
+
+const chatService = new ChatService();
+
+app.post('/api/chat', express.json(), async (req, res) => {
+  const { message, sessionId = 'default' } = req.body;
+  try {
+    const result = await chatService.processMessage(message, sessionId);
+    res.json({ reply: result.reply });
+  } catch (err) {
+    res.status(500).json({ reply: err.message || 'Sorry, there was an error.' });
+  }
 });
 
 app.listen(port, () => {
