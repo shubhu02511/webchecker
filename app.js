@@ -109,24 +109,24 @@ app.post('/', requireAuth, async (req, res) => {
       const issues = [];
       const solutions = [];
       if (imgWithoutAlt > 0) {
-        issues.push(`Images without alt (${imgPercent}%)`);
-        solutions.push('Add descriptive alt text to all images.');
+        issues.push(`Some images are missing descriptions (${imgPercent}%)`);
+        solutions.push('Add a short description (alt text) to every image so everyone can understand what the image shows.');
       }
       if (linkWithoutHref > 0) {
-        issues.push(`Links without href (${linkPercent}%)`);
-        solutions.push('Ensure all links have valid href attributes.');
+        issues.push(`Some links don’t go anywhere (${linkPercent}%)`);
+        solutions.push('Make sure every link takes people to the right place by adding a web address (href).');
       }
       if (inputMissingLabel > 0) {
-        issues.push(`Inputs missing label (${inputPercent}%)`);
-        solutions.push('Add clear labels to all input fields.');
+        issues.push(`Some form boxes are missing names or instructions (${inputPercent}%)`);
+        solutions.push('Add a clear label or instruction to every form box so people know what to type.');
       }
       return {
         issues,
         solutions,
         chartData: [
-          { label: 'Images without alt', percent: imgPercent },
-          { label: 'Links without href', percent: linkPercent },
-          { label: 'Inputs missing label', percent: inputPercent }
+          { label: 'Images missing descriptions', percent: imgPercent },
+          { label: 'Links without destination', percent: linkPercent },
+          { label: 'Form boxes missing labels', percent: inputPercent }
         ]
       };
     });
