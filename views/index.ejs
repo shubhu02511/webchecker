@@ -54,7 +54,7 @@
   </style>
   <script>
     function refreshPage() {
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     }
   </script>
 </head>
@@ -90,7 +90,7 @@
         <li style="display: inline-block; margin: 0 10px;">✅ Test multiple aspects of your website</li>
       </ul>
       <div class="form-box">
-        <form method="POST" action="/">
+        <form method="POST" action="/dashboard">
           <input type="text" name="url" placeholder="Enter your web address" required />
           <button type="submit">Check Website</button>
           <button type="button" onclick="refreshPage()">🔁 Refresh</button>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebChecker - Website Accessibility Analyzer</title>
+  <link rel="stylesheet" href="/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .hero-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-section h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .hero-section p {
+      font-size: 1.3rem;
+      margin-bottom: 40px;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .cta-btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .cta-btn.primary {
+      background: #fff;
+      color: #667eea;
+    }
+
+    .cta-btn.primary:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .cta-btn.secondary {
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+    }
+
+    .cta-btn.secondary:hover {
+      background: #fff;
+      color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .features-section {
+      padding: 80px 20px;
+      background: #f8f9fa;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .feature-card p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .stats-section {
+      padding: 60px 20px;
+      background: #667eea;
+      color: white;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .stat-item h3 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .stat-item p {
+      color: #003366 !important;
+      font-size: 1.1rem;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-section p {
+        font-size: 1.1rem;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .cta-btn {
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <span class="logo-text">WEBCHECKER</span>
+      <nav>
+        <a href="/login" class="cta-btn secondary" style="margin: 0;">Login</a>
+        <a href="/signup" class="cta-btn primary" style="margin: 0;">Sign Up</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero-section">
+    <h1>Website Accessibility Analyzer</h1>
+    <p>Make your website accessible to everyone. Our free tool analyzes your website for accessibility issues and provides actionable solutions to improve user experience for all visitors.</p>
+    <div class="cta-buttons">
+      <a href="/login" class="cta-btn primary">Get Started</a>
+      <a href="/signup" class="cta-btn secondary">Create Account</a>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="container">
+      <h2 style="text-align: center; margin-bottom: 60px; font-size: 2.5rem; color: #333;">Why Choose WebChecker?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Comprehensive Analysis</h3>
+          <p>Scan your website for accessibility issues including missing alt text, broken links, and form labeling problems.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Instant Results</h3>
+          <p>Get detailed reports within seconds. No waiting, no complicated setup - just paste your URL and analyze.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💡</div>
+          <h3>Actionable Solutions</h3>
+          <p>Receive specific recommendations and code examples to fix accessibility issues and improve your website.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Visual Reports</h3>
+          <p>View your accessibility data in beautiful charts and export results for your team or clients.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🆓</div>
+          <h3>100% Free</h3>
+          <p>No hidden costs, no premium features. All accessibility analysis tools are completely free to use.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure & Private</h3>
+          <p>Your website data is processed securely and never stored. Your privacy is our priority.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="container">
+      <h2 style="margin-bottom: 50px; font-size: 2.5rem;">Trusted by Developers Worldwide</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>10,000+</h3>
+          <p>Websites Analyzed</p>
+        </div>
+        <div class="stat-item">
+          <h3>50,000+</h3>
+          <p>Issues Found</p>
+        </div>
+        <div class="stat-item">
+          <h3>99.9%</h3>
+          <p>Uptime</p>
+        </div>
+        <div class="stat-item">
+          <h3>24/7</h3>
+          <p>Support</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <p>📧 Email: <a href="mailto:shubhamchaurasiya095@gmail.com">shubhamchaurasiya095@gmail.com</a></p>
+      <p>📞 Contact: <a href="tel:+917752993275">+91-7752993275</a></p>
+      <p>&copy; 2024 WebChecker. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html> 
