@@ -141,6 +141,20 @@
       font-weight: 500;
     }
 
+    .text-block {
+      margin: 7vw auto;
+      max-width: 800px;
+      font-family: monospace;
+      font-size: clamp(14px, 4vw, 32px);
+      color: #fff;
+      text-align: center;
+    }
+
+    .char {
+      will-change: transform;
+      display: inline-block;
+    }
+
     @media (max-width: 768px) {
       .hero-section h1 {
         font-size: 2.5rem;
@@ -159,6 +173,11 @@
         width: 200px;
       }
     }
+
+    .dud {
+      color: #fff;
+      opacity: 0.5;
+    }
   </style>
 </head>
 <body>
@@ -174,7 +193,13 @@
 
   <section class="hero-section">
     <h1>Website Accessibility Analyzer</h1>
-    <p>Make your website accessible to everyone. Our free tool analyzes your website for accessibility issues and provides actionable solutions to improve user experience for all visitors.</p>
+    <div class="text-block" id="scrambled-hero">
+      <p id="scramble-text">
+        Make your website accessible to everyone. Our free tool analyzes
+        your website for accessibility issues and provides actionable
+        solutions to improve user experience for all visitors.
+      </p>
+    </div>
     <div class="cta-buttons">
       <a href="/login" class="cta-btn primary">Get Started</a>
       <a href="/signup" class="cta-btn secondary">Create Account</a>
@@ -224,24 +249,137 @@
       <h2 style="margin-bottom: 50px; font-size: 2.5rem;">Trusted by Developers Worldwide</h2>
       <div class="stats-grid">
         <div class="stat-item">
-          <h3>10,000+</h3>
+          <h3 class="stat-animate" data-target="10000">0</h3>
           <p>Websites Analyzed</p>
         </div>
         <div class="stat-item">
-          <h3>50,000+</h3>
+          <h3 class="stat-animate" data-target="50000">0</h3>
           <p>Issues Found</p>
         </div>
         <div class="stat-item">
-          <h3>99.9%</h3>
+          <h3 class="stat-animate" data-target="99.9" data-decimal="true">0%</h3>
           <p>Uptime</p>
         </div>
         <div class="stat-item">
-          <h3>24/7</h3>
+          <h3 class="stat-animate" data-target="24" data-suffix="/7">0</h3>
           <p>Support</p>
         </div>
       </div>
     </div>
   </section>
+
+  <script>
+    function animateValue(el, start, end, duration, suffix = '', decimal = false) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        let value = decimal
+          ? (progress * (end - start) + start).toFixed(1)
+          : Math.floor(progress * (end - start) + start);
+        if (!decimal) value = value.toLocaleString();
+        el.textContent = value + suffix;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          el.textContent = (decimal ? end.toFixed(1) : end.toLocaleString()) + suffix;
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    function runStatAnimations() {
+      document.querySelectorAll('.stat-animate').forEach(el => {
+        const end = parseFloat(el.getAttribute('data-target'));
+        const decimal = el.getAttribute('data-decimal') === 'true';
+        const suffix = el.getAttribute('data-suffix') || (decimal ? '%' : '+');
+        animateValue(el, 0, end, 3000, suffix, decimal);
+      });
+    }
+
+    // Animate when stats section is in view
+    const statsSection = document.querySelector('.stats-section');
+    let statsAnimated = false;
+    function onScroll() {
+      if (statsAnimated) return;
+      const rect = statsSection.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        runStatAnimations();
+        statsAnimated = true;
+        window.removeEventListener('scroll', onScroll);
+      }
+    }
+    window.addEventListener('scroll', onScroll);
+    // Also run if already in view on load
+    onScroll();
+  </script>
+
+  <script>
+    // Pure JS Text Scramble Effect (inspired by codrops)
+    class TextScramble {
+      constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\/[]{}—=+*^?#________';
+        this.update = this.update.bind(this);
+      }
+      setText(newText) {
+        const oldText = this.el.innerText;
+        const length = Math.max(oldText.length, newText.length);
+        const promise = new Promise((resolve) => (this.resolve = resolve));
+        this.queue = [];
+        for (let i = 0; i < length; i++) {
+          const from = oldText[i] || '';
+          const to = newText[i] || '';
+          const start = Math.floor(Math.random() * 40);
+          const end = start + Math.floor(Math.random() * 40);
+          this.queue.push({ from, to, start, end });
+        }
+        cancelAnimationFrame(this.frameRequest);
+        this.frame = 0;
+        this.update();
+        return promise;
+      }
+      update() {
+        let output = '';
+        let complete = 0;
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+          let { from, to, start, end, char } = this.queue[i];
+          if (this.frame >= end) {
+            complete++;
+            output += to;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = this.randomChar();
+              this.queue[i].char = char;
+            }
+            output += `<span class="dud">${char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+        this.el.innerHTML = output;
+        if (complete === this.queue.length) {
+          this.resolve();
+        } else {
+          this.frameRequest = requestAnimationFrame(this.update);
+          this.frame++;
+        }
+      }
+      randomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      }
+    }
+    // Usage
+    const scrambleEl = document.getElementById('scramble-text');
+    const fx = new TextScramble(scrambleEl);
+    scrambleEl.addEventListener('mouseenter', () => {
+      fx.setText(scrambleEl.textContent);
+    });
+    // Optionally, animate on load
+    window.addEventListener('DOMContentLoaded', () => {
+      fx.setText(scrambleEl.textContent);
+    });
+  </script>
 
   <footer>
     <div class="footer-content">
