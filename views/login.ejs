@@ -5,29 +5,224 @@
   <title>Login</title>
   <link rel="stylesheet" href="/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    .login-glass {
+      background: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      padding: 48px 36px 32px 36px;
+      max-width: 400px;
+      width: 100%;
+      margin: 60px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      animation: fadeIn 1.2s cubic-bezier(.39,.575,.56,1.000);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .login-glass h2 {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: #0a2472;
+      margin-bottom: 28px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .login-glass form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .input-group {
+      position: relative;
+      width: 100%;
+      margin-bottom: 0;
+    }
+    .login-glass input[type="text"],
+    .login-glass input[type="password"] {
+      width: 100%;
+      padding: 14px 44px 14px 18px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+      color: #0a2472;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(10,36,114,0.06);
+      transition: box-shadow 0.2s, border 0.2s;
+      border: 2px solid transparent;
+      box-sizing: border-box;
+      margin-bottom: 0;
+      display: block;
+    }
+    .login-glass input[type="text"]:focus,
+    .login-glass input[type="password"]:focus {
+      border: 2px solid #0a2472;
+      box-shadow: 0 4px 16px rgba(10,36,114,0.10);
+      background: #fff;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      color: #0a2472;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      padding: 0;
+      height: 32px;
+      width: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toggle-password:hover { opacity: 1; }
+    .login-btn {
+      width: 100%;
+      padding: 14px 0;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #0a2472 0%, #00b4d8 100%);
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(10,36,114,0.10);
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 8px;
+    }
+    .login-btn:hover {
+      background: linear-gradient(90deg, #00b4d8 0%, #0a2472 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .login-glass .no-issues {
+      width: 100%;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      padding: 10px 0;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .login-glass .no-issues[style*='background:#ffd6d6'] {
+      color: #b30000;
+      border-left: 5px solid #b30000;
+      background: #ffd6d6;
+    }
+    .login-glass .no-issues[style*='background:#d6ffd6'] {
+      color: #006600;
+      border-left: 5px solid #006600;
+      background: #d6ffd6;
+    }
+    .login-glass .signup-link {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    .login-glass .signup-link a {
+      color: #0a2472;
+      text-decoration: underline;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .login-glass .signup-link a:hover {
+      color: #00b4d8;
+    }
+    /* Animated background shapes */
+    .bg-shape {
+      position: fixed;
+      z-index: 0;
+      border-radius: 50%;
+      opacity: 0.18;
+      filter: blur(12px);
+      animation: float 8s ease-in-out infinite alternate;
+    }
+    .bg-shape1 {
+      width: 320px; height: 320px; background: #0a2472; left: -120px; top: 10vh; animation-delay: 0s; }
+    .bg-shape2 {
+      width: 220px; height: 220px; background: #00b4d8; right: -80px; top: 60vh; animation-delay: 2s; }
+    .bg-shape3 {
+      width: 180px; height: 180px; background: #a1c4fd; left: 60vw; top: 80vh; animation-delay: 4s; }
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-40px) scale(1.08); }
+    }
+    @media (max-width: 600px) {
+      .login-glass { padding: 32px 10px 24px 10px; }
+      .login-glass h2 { font-size: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
+  <div class="bg-shape bg-shape1"></div>
+  <div class="bg-shape bg-shape2"></div>
+  <div class="bg-shape bg-shape3"></div>
   <header>
     <div class="nav">
       <span class="logo-text">WEBCHECKER</span>
     </div>
   </header>
-  <main class="container" style="max-width:400px; margin-top:60px;">
-    <h2 style="text-align:center;">Login</h2>
-    <% if (error) { %>
-      <div class="no-issues" style="background:#ffd6d6; color:#b30000; border-left:5px solid #b30000;"> <%= error %> </div>
-    <% } %>
-    <% if (success) { %>
-      <div class="no-issues" style="background:#d6ffd6; color:#006600; border-left:5px solid #006600;"> <%= success %> </div>
-    <% } %>
-    <form method="POST" action="/login" style="display:flex; flex-direction:column; gap:18px;">
-      <input type="text" name="username" placeholder="Username" required autocomplete="username">
-      <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
-      <button type="submit">Login</button>
-    </form>
-    <div style="text-align:center; margin-top:18px;">
-      <a href="/signup">Don't have an account? Sign up</a>
+  <main>
+    <div class="login-glass">
+      <h2>Login</h2>
+      <% if (error) { %>
+        <div class="no-issues" style="background:#ffd6d6;"> <%= error %> </div>
+      <% } %>
+      <% if (success) { %>
+        <div class="no-issues" style="background:#d6ffd6;"> <%= success %> </div>
+      <% } %>
+      <form method="POST" action="/login" autocomplete="on">
+        <div class="input-group">
+          <input type="text" name="username" placeholder="Username" required autocomplete="username">
+        </div>
+        <div class="input-group">
+          <input type="password" name="password" placeholder="Password" required autocomplete="current-password" id="password-field">
+          <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword()" aria-label="Show or hide password">
+            <span id="eye-icon">👁️</span>
+          </button>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+      <div class="signup-link">
+        Don't have an account? <a href="/signup">Sign up</a>
+      </div>
     </div>
   </main>
+  <script>
+    function togglePassword() {
+      const pwd = document.getElementById('password-field');
+      const eye = document.getElementById('eye-icon');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        eye.textContent = '🙈';
+      } else {
+        pwd.type = 'password';
+        eye.textContent = '👁️';
+      }
+    }
+  </script>
 </body>
 </html> 
