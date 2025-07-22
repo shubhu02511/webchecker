@@ -234,9 +234,8 @@ app.post('/dashboard', requireAuth, async (req, res) => {
   }
 });
 
-// Comment out or remove app.listen for Vercel
-// app.listen(port, () => {
-//   console.log(`🚀 Server running at http://localhost:${port}`);
-// });
+app.listen(port, () => {
+  console.log(`🚀 Server running at http://localhost:${port}`);
+});
 
 module.exports = app;
