@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: webchecker
+    env: node
+    plan: free
+    autoDeploy: true
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      # Set these in the Render dashboard or via blueprint secrets
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      # Optional; usually leave empty on Render
+      - key: CHROME_PATH
+        sync: false
+
+
