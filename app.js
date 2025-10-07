@@ -175,12 +175,21 @@ app.get('/dashboard', requireAuth, (req, res) => {
 });
 
 app.post('/dashboard', requireAuth, async (req, res) => {
-  const url = req.body.url;
+  const inputUrl = req.body.url || '';
+  const url = /^https?:\/\//i.test(inputUrl) ? inputUrl : `https://${inputUrl}`;
 
   try {
     const launchOptions = {
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--window-size=1366,768',
+        '--no-first-run',
+        '--no-default-browser-check'
+      ]
     };
     if (process.env.CHROME_PATH) {
       launchOptions.executablePath = process.env.CHROME_PATH;
@@ -188,7 +197,11 @@ app.post('/dashboard', requireAuth, async (req, res) => {
     const browser = await puppeteer.launch(launchOptions);
 
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'load', timeout: 0 });
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    );
+    await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US,en;q=0.9' });
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
 
     const analysis = await page.evaluate(() => {
       // Count all elements
