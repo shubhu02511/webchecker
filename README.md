@@ -185,6 +185,24 @@ accessibility-analyzer/
 - `Invalid API key` - Check your Gemini API key configuration
 - `Content blocked by safety filters` - Rephrase your question
 
+## Deploy to Render (Recommended)
+
+1. Push this repository to GitHub.
+2. Create a free MongoDB Atlas cluster and copy the connection string.
+3. On Render → New → Web Service → connect your GitHub repo.
+4. Configure:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+5. Environment Variables:
+   - `GEMINI_API_KEY` = your key
+   - `SESSION_SECRET` = a long random string
+   - `MONGODB_URI` = your Atlas URI
+   - `PORT` = `3000`
+   - `CHROME_PATH` (optional) leave empty; only set if Puppeteer can’t find Chromium
+6. Deploy and open the service URL.
+
+Note: Local MongoDB instances are not reachable from Render; use Atlas or another public MongoDB.
+
 ## Why Google Gemini?
 
 - 🚀 **No Usage Limits**: Generous free tier with no strict limits

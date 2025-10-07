@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
@@ -67,7 +67,13 @@ app.post('/login', async (req, res) => {
     const user = await User.findOne({ username });
     console.log('User found for login:', user);
     if (user && await bcrypt.compare(password, user.password)) {
-      res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly; Path=/');
+      const thirtyDaysInSeconds = 60 * 60 * 24 * 30;
+      const cookieAttrs = [`loggedIn=true`, 'HttpOnly', 'Path=/', `Max-Age=${thirtyDaysInSeconds}`];
+      if (process.env.NODE_ENV === 'production') {
+        cookieAttrs.push('Secure');
+        cookieAttrs.push('SameSite=Lax');
+      }
+      res.setHeader('Set-Cookie', cookieAttrs.join('; '));
       res.redirect('/dashboard');
     } else {
       res.render('login', { error: 'Invalid username or password.', success: null });
@@ -172,11 +178,14 @@ app.post('/dashboard', requireAuth, async (req, res) => {
   const url = req.body.url;
 
   try {
-    const browser = await puppeteer.launch({
-      executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    const launchOptions = {
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    };
+    if (process.env.CHROME_PATH) {
+      launchOptions.executablePath = process.env.CHROME_PATH;
+    }
+    const browser = await puppeteer.launch(launchOptions);
 
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'load', timeout: 0 });
